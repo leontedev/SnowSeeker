@@ -9,6 +9,7 @@
 import SwiftUI
 
 struct ContentView: View {
+    @ObservedObject var favorites = Favorites()
     let resorts: [Resort] = Bundle.main.decode("resorts.json")
     
     var body: some View {
@@ -32,13 +33,22 @@ struct ContentView: View {
                             .font(.headline)
                         Text("\(resort.runs) runs")
                             .foregroundColor(.secondary)
+                    }.layoutPriority(1)
+                    
+                    if self.favorites.contains(resort) {
+                        Spacer()
+                        Image(systemName: "heart.fill")
+                            .accessibility(label: Text("This is a favorite resort"))
+                            .foregroundColor(Color.red)
                     }
                 }
             }
             .navigationBarTitle("Resorts")
             
             WelcomeView()
-        }.phoneOnlyStackNavigationView()
+        }
+        .phoneOnlyStackNavigationView()
+        .environmentObject(favorites)
     }
 }
 
